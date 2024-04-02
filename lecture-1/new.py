@@ -52,3 +52,27 @@ def create_posts(new_posts: Post, response:Response):
 	my_posts.append(post_dict)
 	return {"new_data":post_dict}
 
+@app.delete("/posts/{id}",status_code=status.HTTP_204_NO_CONTENT)
+def delete_post(id:int):
+	data_index = None
+	for each in my_posts:
+		if each['id'] == id:
+			data_index = my_posts.index(each)
+			break
+	if data_index is None:
+		raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail= f"post with {id} not found")
+	return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+@app.put("/posts/{id}")
+def update_post(id:int, post:Post):
+	data_index = None
+	for each in my_posts:
+		if each['id'] == id:
+			data_index = my_posts.index(each)
+			break
+	if data_index is None:
+		raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail=f"post with {id} not found")
+	post_dict = post.dict()
+	my_posts[data_index] = post_dict
+	
+	return {"message":f"updated post with {id} successfully"}
